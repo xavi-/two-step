@@ -1,6 +1,6 @@
 var fs = require("fs");
 var assert = require("assert");
-var Step2 = require("../");
+var TwoStep = require("../");
 
 var expectations = {};
 function expect(message) {
@@ -19,7 +19,7 @@ var selfText = fs.readFileSync(__filename, 'utf8');
 expect('callback:one');
 expect('callback:two');
 expect('callback:three');
-Step2(
+TwoStep(
   function readSelf() {
     fulfill("callback:one");
     fs.readFile(__filename, 'utf8', this.val());
@@ -42,7 +42,7 @@ expect('error:one');
 expect('error:timeout');
 expect('error:two');
 expect('error:three');
-Step2(
+TwoStep(
   function () {
     fulfill('error:one');
     var callback = this.val();
@@ -70,7 +70,7 @@ var dirListing = fs.readdirSync(__dirname),
 expect('group:one');
 expect('group:two');
 expect('group:three');
-Step2(
+TwoStep(
   function readDir() {
     fulfill('group:one');
     fs.readdir(__dirname, this.val());
@@ -97,7 +97,7 @@ Step2(
 expect('group:four');
 expect('group:five');
 // When the group is empty, it should fire with an empty array
-Step2(
+TwoStep(
   function start() {
     var group = this.valArray();
     fulfill('group:four');
@@ -113,7 +113,7 @@ Step2(
 expect("group:test3: 1");
 expect("group:test3: 1,2,3");
 expect("group:test3: 2");
-Step2(
+TwoStep(
     function() {
         this.syncVal(1);
     },
@@ -141,7 +141,7 @@ expect("group:test4: 1");
 expect("group:test4: empty array");
 expect("group:test4: group of zero terminated");
 expect("group:test4: 2");
-Step2(
+TwoStep(
     function() {
         this.syncVal(1);
     },
@@ -167,7 +167,7 @@ expect("group:test5: 1,2");
 expect("group:test5 t1: 666");
 expect("group:test5 t2: 333");
 setTimeout(function() {
-  Step2(
+  TwoStep(
     function parallelCalls() {
       var group = this.valArray();
       var p1 = group(), p2 = group();
@@ -200,7 +200,7 @@ var etcText = fs.readFileSync('/etc/passwd', 'utf8');
 
 expect('parallel:one');
 expect('parallel:two');
-Step2(
+TwoStep(
   // Loads two files in parallel
   function loadStuff() {
     fulfill('parallel:one');
@@ -220,7 +220,7 @@ Step2(
 expect("parallel:test2: 1");
 expect("parallel:test2: 1,2,3");
 expect("parallel:test2: 2");
-Step2(
+TwoStep(
     function() {
         this.syncVal(1);
     },
@@ -248,7 +248,7 @@ Step2(
 expect("parallel:test3: 1,2");
 expect("parallel:test3 t1: 666");
 expect("parallel:test3 t2: 333");
-Step2(
+TwoStep(
   function parallelCalls() {
     var p1 = this.val(), p2 = this.val();
     process.nextTick(function() { p1(null, 1); });
@@ -277,7 +277,7 @@ Step2(
 expect("parallel:test4: 1,2");
 expect("parallel:test4 t1: 666");
 expect("parallel:test4 t2: 333");
-Step2(
+TwoStep(
   function parallelCalls() {
     var p1 = this.val(), p2 = this.val();
     p1(null, 1);

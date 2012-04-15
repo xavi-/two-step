@@ -103,7 +103,7 @@ StepObj.prototype = {
 	}
 };
 
-function step2() {
+function TwoStep() {
 	var steps =  Array.prototype.slice.call(arguments);
 	var curIdx = 0;
 	var data = {};
@@ -129,4 +129,4 @@ function step2() {
 	nextStep();
 }
 
-module.exports = step2;
+module.exports = TwoStep;
