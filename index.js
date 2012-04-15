@@ -57,7 +57,7 @@ StepObj.prototype = {
 			self._params.done(paramIdx, val);
 		}
 	},
-	valGroup: function(name) {
+	valArray: function(name) {
 		name = (name || "group");
 		var self = this, paramIdx = this._params.nextIdx();
 		var groupVals = new ParamList(function(err) {

@@ -80,7 +80,7 @@ Step2(
     if (err) throw err;
     // Create a new group
     assert.deepEqual(dirListing, results);
-    var group = this.valGroup();
+    var group = this.valArray();
     results.forEach(function (filename) {
       if (/\.js$/.test(filename)) {
         fs.readFile(__dirname + "/" + filename, 'utf8', group());
@@ -99,7 +99,7 @@ expect('group:five');
 // When the group is empty, it should fire with an empty array
 Step2(
   function start() {
-    var group = this.valGroup();
+    var group = this.valArray();
     fulfill('group:four');
   },
   function readFiles(err, results) {
@@ -120,7 +120,7 @@ Step2(
     function makeGroup(err, num) {
         if(err) throw err;
         fulfill("group:test3: " + num);
-        var group = this.valGroup();
+        var group = this.valArray();
         setTimeout((function(callback) { return function() { callback(null, 1); } })(group()), 100);
         group()(null, 2);
         setTimeout((function(callback) { return function() { callback(null, 3); } })(group()), 0);
@@ -148,7 +148,7 @@ Step2(
     function makeGroup(err, num) {
         if(err) throw err;
         fulfill("group:test4: " + num);
-        this.valGroup();
+        this.valArray();
     },
     function groupResults(err, results) {
         if(err) throw err;
@@ -169,7 +169,7 @@ expect("group:test5 t2: 333");
 setTimeout(function() {
   Step2(
     function parallelCalls() {
-      var group = this.valGroup();
+      var group = this.valArray();
       var p1 = group(), p2 = group();
       p1(null, 1);
       p2(null, 2);
