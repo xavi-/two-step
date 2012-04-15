@@ -120,7 +120,7 @@ function TwoStep() {
 
 		try {
 			steps[curIdx++].apply(stepObj, arguments);
-			params.checkPending(); // Handle case where nothing async occurs in the step
+			params.checkPending(); // Handle case where nothing async occurs in the callback
 		} catch(e) {
 			params.error(e, { name: steps[curIdx - 1].name });
 		}
