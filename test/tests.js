@@ -1,6 +1,6 @@
 var fs = require("fs");
 var assert = require("assert");
-var Step2 = require("./");
+var Step2 = require("../");
 
 var expectations = {};
 function expect(message) {
