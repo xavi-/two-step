@@ -46,7 +46,7 @@ function StepObj(params, steps, curIdx) {
 	this._params = params;
 	this._steps = steps
 	this._curIdx = curIdx;
-	this.name = steps[curIdx];
+	this.name = steps[curIdx].name;
 }
 StepObj.prototype = {
 	val: function(name) {
@@ -95,10 +95,10 @@ StepObj.prototype = {
 			return func(this.name, this._curIdx, this._steps);
 		}
 
-		for(var i = 0; i < steps.length; i++) {
-			if(steps[i].name !== func) { continue; }
+		for(var i = 0; i < this._steps.length; i++) {
+			if(this._steps[i].name !== func) { continue; }
 
-			this._params.next(i);
+			this._params.step(i);
 		}
 	}
 };
@@ -109,9 +109,9 @@ function TwoStep() {
 	var data = {};
 
 	function nextStep(idxOverride) {
-		if(curIdx >= steps.length) { return; }
+		if(idxOverride != null) { curIdx = idxOverride; }
 
-		if(idxOverride != null) { curId = idxOverride; }
+		if(curIdx >= steps.length) { return; }
 
 		var params = new ParamList(nextStep);
 		var stepObj = new StepObj(params, steps, curIdx);
