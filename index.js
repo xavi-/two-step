@@ -42,11 +42,10 @@ ParamList.prototype = {
 function errInfo(step, paramIdx, paramName) {
 	return { name: step, paramIdx: paramIdx, paramName: paramName };
 }
-function StepObj(params, steps, curIdx) {
+function StepObj(params, jumpTo, name) {
 	this._params = params;
-	this._steps = steps
-	this._curIdx = curIdx;
-	this.name = steps[curIdx].name;
+	this._jumpTo = jumpTo;
+	this.name = name;
 }
 StepObj.prototype = {
 	val: function(name) {
@@ -90,16 +89,12 @@ StepObj.prototype = {
 		emitter.on('error', function(err) { self._params.error(err, errInfo(self.name, paramIdx, name)); });
 		emitter.on('end', function() { self._params.done(paramIdx, chunks); });
 	},
-	skipTo: function(func) {
+	jumpTo: function(func, args) {
 		if(Object.prototype.toString.call(func) === "[object Function]") {
-			return func(this.name, this._curIdx, this._steps);
+			return func.apply(this, args);
 		}
 
-		for(var i = 0; i < this._steps.length; i++) {
-			if(this._steps[i].name !== func) { continue; }
-
-			this._params.step(i);
-		}
+		this._jumpTo(func, args);
 	}
 };
 
@@ -108,13 +103,22 @@ function TwoStep() {
 	var curIdx = 0;
 	var data = {};
 
-	function nextStep(idxOverride) {
-		if(idxOverride != null) { curIdx = idxOverride; }
+	function jumpTo(name, args) {
+		for(var i = 0; i < steps.length; i++) {
+			if(steps[i].name !== name) { continue; }
 
+			curIdx = i;
+
+			break;
+		}
+		nextStep.apply(null, args);
+	}
+
+	function nextStep() {
 		if(curIdx >= steps.length) { return; }
 
 		var params = new ParamList(nextStep);
-		var stepObj = new StepObj(params, steps, curIdx);
+		var stepObj = new StepObj(params, jumpTo, steps[curIdx].name);
 
 		stepObj.data = data;
 
