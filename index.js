@@ -68,14 +68,20 @@ StepObj.prototype = {
 		// Handles groups of zero length
 		process.nextTick(function() { groupVals.checkPending(); });
 
-		return function val(){
-			var valIdx = groupVals.nextIdx();
+		return {
+			val: function(valName) {
+				valName = (valName || name + "(" + valIdx + ")");
+				var valIdx = groupVals.nextIdx();
 
-			return function(err, val) {
-				if(err) { return groupVals.error(err, errInfo("", 0, name + "(" + valIdx + ")")); }
+				return function(err, val) {
+					if(err) { return groupVals.error(err, errInfo("", 0, valName)); }
 
-				groupVals.done(valIdx, val);
-			};
+					groupVals.done(valIdx, val);
+				};
+			},
+			syncVal: function(val, valName) {
+				this.val(valName)(null, val);
+			}
 		};
 	},
 	syncVal: function(val, name) {

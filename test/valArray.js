@@ -17,10 +17,10 @@ vows.describe("Test `this.valArray`").addBatch({
 
 					check.save(this, arguments);
 
-					var group = this.valArray();
+					var files = this.valArray();
 					results.forEach(function (filename) {
 						if (/\.js$/.test(filename)) {
-							fs.readFile(__dirname + "/" + filename, 'utf8', group());
+							fs.readFile(__dirname + "/" + filename, 'utf8', files.val());
 						}
 					});
 				},
@@ -78,7 +78,7 @@ vows.describe("Test `this.valArray`").addBatch({
 					check.save(this, arguments);
 
 					var group = this.valArray();
-					var p1 = group(), p2 = group();
+					var p1 = group.val(), p2 = group.val();
 					p1(null, 1);
 					p2(null, 2);
 				},
@@ -106,10 +106,10 @@ vows.describe("Test `this.valArray`").addBatch({
 					check.save(this, arguments);
 
 					var group = this.valArray();
-					var p1 = group();
+					var p1 = group.val();
 					setTimeout(function() { p1(null, 1); }, 10);
-					group()(null, 2);
-					var p3 = group();
+					group.syncVal(2);
+					var p3 = group.val();
 					setTimeout(function() { p3(null, 3); }, 0);
 				},
 				function results(err, arr) {
@@ -139,14 +139,14 @@ vows.describe("Test `this.valArray`").addBatch({
 					check.save(this, arguments);
 
 					var group1 = this.valArray();
-					var g1p1 = group1();
+					var g1p1 = group1.val();
 					setTimeout(function() { g1p1(null, 1); }, 10);
-					group1()(null, 2);
-					var g1p3 = group1();
+					group1.syncVal(2);
+					var g1p3 = group1.val();
 					setTimeout(function() { g1p3(null, 3); }, 0);
 
 					var group2 = this.valArray();
-					var g2p1 = group2(), g2p2 = group2(), g2p3 = group2();
+					var g2p1 = group2.val(), g2p2 = group2.val(), g2p3 = group2.val();
 					setTimeout(function() { g2p1(null, "a"); }, 0);
 					setTimeout(function() { g2p2(null, "b"); }, 0);
 					setTimeout(function() { g2p3(null, "c"); }, 0);
