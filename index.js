@@ -57,26 +57,26 @@ StepObj.prototype = {
 		}
 	},
 	valArray: function(name) {
-		name = (name || "group");
+		name = (name || "array");
 		var self = this, paramIdx = this._params.nextIdx();
-		var groupVals = new ParamList(function(err) {
+		var arrayVals = new ParamList(function(err) {
 			if(err) { return self._params.error(err, errInfo(self.name, paramIdx, err.step.name)); }
 
-			self._params.done(paramIdx, groupVals.vals.slice(1));
+			self._params.done(paramIdx, arrayVals.vals.slice(1));
 		});
 
-		// Handles groups of zero length
-		process.nextTick(function() { groupVals.checkPending(); });
+		// Handles arrays of zero length
+		process.nextTick(function() { arrayVals.checkPending(); });
 
 		return {
 			val: function(valName) {
 				valName = (valName || name + "(" + valIdx + ")");
-				var valIdx = groupVals.nextIdx();
+				var valIdx = arrayVals.nextIdx();
 
 				return function(err, val) {
-					if(err) { return groupVals.error(err, errInfo("", 0, valName)); }
+					if(err) { return arrayVals.error(err, errInfo("", 0, valName)); }
 
-					groupVals.done(valIdx, val);
+					arrayVals.done(valIdx, val);
 				};
 			},
 			syncVal: function(val, valName) {

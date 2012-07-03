@@ -5,7 +5,7 @@ var TwoStep = require("../");
 var check = require("./basic-checks");
 
 vows.describe("Test `this.valArray`").addBatch({
-	"basic group test reading directories": {
+	"basic valArray test reading directories": {
 		topic: function() {
 			TwoStep(
 				function readDir() {
@@ -47,7 +47,7 @@ vows.describe("Test `this.valArray`").addBatch({
 			assert.deepEqual(data["showAll"].args[1], dirResults);
 		}
 	},
-	"test empty group": {
+	"test empty valArray": {
 		topic: function() {
 			TwoStep(
 				function calls() {
@@ -68,10 +68,10 @@ vows.describe("Test `this.valArray`").addBatch({
 		"every step called": check.coverage([ "calls", "results" ]),
 		"steps called in order": check.order([ "calls", "results" ]),
 		"check results": function(data) {
-			assert.deepEqual(data["results"].args[1], [], "Empty group didn't result in empty array");
+			assert.deepEqual(data["results"].args[1], [], "Empty valArray didn't result in empty array");
 		}
 	},
-	"test sync group": {
+	"test sync calls to valArray async callbacks": {
 		topic: function() {
 			TwoStep(
 				function calls() {
@@ -96,10 +96,10 @@ vows.describe("Test `this.valArray`").addBatch({
 		"every step called": check.coverage([ "calls", "results" ]),
 		"steps called in order": check.order([ "calls", "results" ]),
 		"check results": function(data) {
-			assert.deepEqual(data["results"].args[1], [ 1, 2 ], "Group from sync values are incorrect");
+			assert.deepEqual(data["results"].args[1], [ 1, 2 ], "Results array from sync values is incorrect");
 		}
 	},
-	"test mixed sync and async group values": {
+	"test mixed sync and async values": {
 		topic: function() {
 			TwoStep(
 				function calls(err, num) {
@@ -128,11 +128,11 @@ vows.describe("Test `this.valArray`").addBatch({
 		"check results": function(data) {
 			assert.deepEqual(
 				data["results"].args[1], [ 1, 2, 3 ],
-				"Group from mixed sync and async values are incorrect"
+				"Results array from mixed sync and async values is incorrect"
 			);
 		}
 	},
-	"multi-group mixed sync and async values": {
+	"multi-valArray with mixed sync and async values": {
 		topic: function() {
 			TwoStep(
 				function calls(err, num) {
@@ -167,11 +167,11 @@ vows.describe("Test `this.valArray`").addBatch({
 		"check results": function(data) {
 			assert.deepEqual(
 				data["results"].args[1], [ 1, 2, 3 ],
-				"Multi group from mixed sync and async values are incorrect"
+				"Results array with mixed sync and async values is incorrect"
 			);
 			assert.deepEqual(
 				data["results"].args[2], [ "a", "b", "c" ],
-				"Multi group from mixed sync and async values are incorrect"
+				"Results array from mixed sync and async values is incorrect"
 			);
 		}
 	}
