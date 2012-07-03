@@ -27,7 +27,7 @@ An optional string parameter can passed in to `this.val` as well.  This string c
 	var userId = /* ...  some value ... */;
 	TwoStep(
 		function getProfile() {
-			if(user.id in profileCache) {
+			if(userId in profileCache) {
 				this.syncVal(profileCache[userId]);
 			} else {
 				profileDB.get(userId, this.val());
@@ -45,10 +45,12 @@ An optional string parameter can passed in to `this.val` as well.  This string c
 			var profiles = this.valArray();
 
 			for(var i = 0; i < userIds.length; i++) {
-				if(userIds[i] in profileCache) {
-					profiles.syncVal(profileCache[userIds[i]]);
+				var userId = userIds[i];
+
+				if(userId in profileCache) {
+					profiles.syncVal(profileCache[userId]);
 				} else {
-					profileDB.get(userIds[i], profiles.val());
+					profileDB.get(userId, profiles.val());
 				}
 			}
 		},
