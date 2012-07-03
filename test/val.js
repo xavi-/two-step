@@ -13,13 +13,14 @@ vows.describe("Test `this.val`").addBatch({
 					check.save(this, arguments);
 
 					fs.readFile(__filename, 'utf8', this.val());
+					fs.readFile(__filename, 'utf8', this());
 				},
-				function capitalize(err, text) {
+				function capitalize(err, text1, text2) {
 					if(err) { throw err; }
 
 					check.save(this, arguments);
 
-					this.syncVal(text.toUpperCase());
+					this.syncVal(text1.toUpperCase());
 				},
 				function showIt(err, newText) {
 					if(err) { throw err; }
@@ -36,7 +37,9 @@ vows.describe("Test `this.val`").addBatch({
 		"steps called in order": check.order([ "readSelf", "capitalize", "showIt" ]),
 		"check file loaded": function(data) {
 			var testText = fs.readFileSync(__filename, 'utf8');
-			assert.equal(testText, data["capitalize"].args[1], "Text Loaded");
+			assert.equal(testText, data["capitalize"].args[1], "Text1 Loaded");
+			assert.equal(testText, data["capitalize"].args[2], "Text2 Loaded");
+			assert.equal(data["capitalize"].args[1], data["capitalize"].args[2], "Text1 does not equal Text2");
 		},
 		"check text is capitalize": function(data) {
 			assert.equal(data["capitalize"].args[1].toUpperCase(), data["showIt"].args[1], "Text Uppercased");
@@ -48,7 +51,7 @@ vows.describe("Test `this.val`").addBatch({
 				function calls() {
 					check.save(this, arguments);
 
-					var p1 = this.val(), p2 = this.val();
+					var p1 = this.val(), p2 = this();
 					setTimeout(function() { p1(null, 1); }, 0);
 					setTimeout(function() { p2(null, 2); }, 0);
 				},
@@ -76,7 +79,7 @@ vows.describe("Test `this.val`").addBatch({
 				function calls() {
 					check.save(this, arguments);
 
-					var p1 = this.val(), p2 = this.val();
+					var p1 = this.val(), p2 = this();
 					p1(null, 1);
 					p2(null, 2);
 				},
@@ -107,7 +110,7 @@ vows.describe("Test `this.val`").addBatch({
 					var p1 = this.val();
 					setTimeout(function() { p1(null, 1); }, 10);
 					this.syncVal(2);
-					var p3 = this.val();
+					var p3 = this();
 					setTimeout(function() { p3(null, 3); }, 0);
 				},
 				function results(err, one, two, three) {

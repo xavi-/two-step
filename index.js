@@ -43,15 +43,20 @@ function errInfo(step, paramIdx, paramName) {
 	return { name: step, paramIdx: paramIdx, paramName: paramName };
 }
 function StepObj(params, jumpTo, name) {
-	this._params = params;
-	this._jumpTo = jumpTo;
-	this.name = name;
+	var step = function() { return step.val.apply(step, arguments); };
+	step._params = params;
+	step._jumpTo = jumpTo;
+	step._name = name;
+
+	step.__proto__ = StepObj.prototype;
+
+	return step;
 }
 StepObj.prototype = {
 	val: function(name) {
 		var self = this, paramIdx = this._params.nextIdx();
 		return function(err, val) {
-			if(err) { return self._params.error(err, errInfo(self.name, paramIdx, name)); }
+			if(err) { return self._params.error(err, errInfo(self._name, paramIdx, name)); }
 
 			self._params.done(paramIdx, val);
 		}
@@ -60,7 +65,7 @@ StepObj.prototype = {
 		name = (name || "array");
 		var self = this, paramIdx = this._params.nextIdx();
 		var arrayVals = new ParamList(function(err) {
-			if(err) { return self._params.error(err, errInfo(self.name, paramIdx, err.step.name)); }
+			if(err) { return self._params.error(err, errInfo(self._name, paramIdx, err.step.name)); }
 
 			self._params.done(paramIdx, arrayVals.vals.slice(1));
 		});
@@ -68,21 +73,21 @@ StepObj.prototype = {
 		// Handles arrays of zero length
 		process.nextTick(function() { arrayVals.checkPending(); });
 
-		return {
-			val: function(valName) {
-				valName = (valName || name + "(" + valIdx + ")");
-				var valIdx = arrayVals.nextIdx();
+		var arrayCB = function(valName) {
+			valName = (valName || name + "(" + valIdx + ")");
+			var valIdx = arrayVals.nextIdx();
 
-				return function(err, val) {
-					if(err) { return arrayVals.error(err, errInfo("", 0, valName)); }
+			return function(err, val) {
+				if(err) { return arrayVals.error(err, errInfo("", 0, valName)); }
 
-					arrayVals.done(valIdx, val);
-				};
-			},
-			syncVal: function(val, valName) {
-				this.val(valName)(null, val);
-			}
+				arrayVals.done(valIdx, val);
+			};
 		};
+		arrayCB.val = arrayCB;
+		arrayCB.syncVal = function(val, valName) {
+			this.val(valName)(null, val);
+		}
+		return arrayCB;
 	},
 	syncVal: function(val, name) {
 		this.val(name)(null, val);
@@ -92,7 +97,7 @@ StepObj.prototype = {
 
 		var chunks = [];
 		emitter.on('data', function (chunk) { chunks.push(chunk); });
-		emitter.on('error', function(err) { self._params.error(err, errInfo(self.name, paramIdx, name)); });
+		emitter.on('error', function(err) { self._params.error(err, errInfo(self._name, paramIdx, name)); });
 		emitter.on('end', function() { self._params.done(paramIdx, chunks); });
 	},
 	jumpTo: function(func, args) {

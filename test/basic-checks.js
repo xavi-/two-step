@@ -2,7 +2,7 @@ var assert = require("assert");
 
 module.exports = {
 	save: function(stepObj, args) {
-		stepObj.data[stepObj.name] = { when: Date.now(), args: Array.prototype.slice.call(args) };
+		stepObj.data[stepObj._name] = { when: Date.now(), args: Array.prototype.slice.call(args) };
 	},
 	coverage: function(names) {
 		return function(data) {
