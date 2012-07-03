@@ -120,7 +120,10 @@ function TwoStep() {
 		nextStep.apply(null, args);
 	}
 
-	function nextStep() {
+	function nextStep(err) {
+		// If error occurs in the last test, re-throw exception.
+		if(err && curIdx == steps.length) { throw err; }
+
 		if(curIdx >= steps.length) { return; }
 
 		var params = new ParamList(nextStep);

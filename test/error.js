@@ -45,5 +45,16 @@ vows.describe("Test error handling").addBatch({
 			assert.equal(err.step.paramName, undefined, "Incorrect param name specified in error obj");
 			assert.equal(err.step.paramIdx, undefined, "Incorrect param index specified in error obj");
 		}
+	},
+	"throwing in last step": {
+		topic: function() { return TwoStep; },
+		"error in last step throws error": function(TwoStep) {
+			assert.throws(function() {
+				TwoStep(
+					function first() { },
+					function lastErr() { throw "Last Error Thrown"; }
+				);
+			}, "Last Error Thrown");
+		}
 	}
 }).export(module);
