@@ -1,5 +1,5 @@
 { "name": "two-step"
-, "version": "0.0.1"
+, "version": "0.0.2"
 , "description": "TwoStep is the spiritual successor of Step with better error handling and finer flow control"
 , "keywords": [ "flow control", "step", "async" ]
 , "maintainers":
