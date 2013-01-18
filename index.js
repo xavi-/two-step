@@ -45,7 +45,7 @@ function errInfo(stepName, paramIdx, paramName) {
 }
 function StepObj(params, jumpTo, data) {
 	this._params = params;
-	this._jumpTo = jumpTo;
+	this.jumpTo = jumpTo;
 	this.data = data;
 }
 StepObj.prototype = {
@@ -95,13 +95,6 @@ StepObj.prototype = {
 		emitter.on('data', function (chunk) { chunks.push(chunk); });
 		emitter.on('error', function(err) { params.error(err, errInfo(params.name, paramIdx, name)); });
 		emitter.on('end', function() { params.done(paramIdx, chunks); });
-	},
-	jumpTo: function(func, args) {
-		if(Object.prototype.toString.call(func) === "[object Function]") {
-			return func.apply(this, args);
-		}
-
-		this._jumpTo(func, args);
 	}
 };
 
@@ -110,14 +103,19 @@ function TwoStep() {
 	var curIdx = 0;
 	var data = {};
 
-	function jumpTo(name, args) {
-		for(var i = 0; i < steps.length; i++) {
-			if(steps[i].name !== name) { continue; }
+	function jumpTo(func, args) {
+    if (typeof func === 'function') {
+      curIdx = Number.MAX_VALUE;
+      func.apply(null, args);
+    } else {
+      for(var i = 0; i < steps.length; i++) {
+        if(steps[i].name !== func) { continue; }
 
-			curIdx = i;
+        curIdx = i;
 
-			break;
-		}
+        break;
+      }
+    }
 		nextStep.apply(null, args);
 	}
 
