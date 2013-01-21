@@ -13,7 +13,6 @@ vows.describe("Test `this.val`").addBatch({
 				},
 				function skip(err) {
 					check.save(this, arguments);
-					throw "This callback should not be executed.";
 				},
 				function last(err) {
 					check.save(this, arguments);
@@ -36,30 +35,39 @@ vows.describe("Test `this.val`").addBatch({
 	"bail out if a function was specified": {
 		topic: function() {
 			var callback = this.callback;
-			var visited = [];
-			function externalFunc() {
-				visited.push('externalFunc');
-				callback(visited, Array.prototype.slice.call(arguments));
+
+			function exit() {
+				this.data.exited = true;
+				this.data.exitArgs = Array.prototype.slice.call(arguments);
+				callback(null, this.data);
 			}
 			TwoStep(
-				function s1() {
-					visited.push('s1');
-					this.jumpTo(externalFunc, ['foo', 'bar', 'baz']);
+				function start() {
+					check.save(this, arguments);
+					this.jumpTo(exit, ['foo', 'bar', 'baz']);
 				},
-				function s2() {
-					visited.push('s2');
+				function skip1() {
+					check.save(this, arguments);
 				},
-				function s3() {
-					visited.push('s3');
+				function skip2() {
+					check.save(this, arguments);
+
+					this.syncVal(this.data);
 				},
 				callback
 			);
 		},
-		"correct callbacks were called": function(visited, _) {
-			assert.deepEqual(visited, ['s1', 'externalFunc']);
+		"no args to first callback": check.emptyArgs("start"),
+		"correct callbacks were called": check.coverage([ "start" ]),
+		"correct callback were skipped": function(data) {
+			assert.ok(!data["skip1"], "First skipped callback was executed");
+			assert.ok(!data["skip2"], "Second skipped callback was executed");
 		},
-		"correct arguments were passed to external function": function(_, externalFuncArgs) {
-			assert.deepEqual(externalFuncArgs, ['foo', 'bar', 'baz']);
+		"correct callbacks were called": function(data) {
+			assert.ok(data.exited, "External jumpTo function was executed.");
+		},
+		"correct arguments were passed to external function": function(data) {
+			assert.deepEqual(data.exitArgs, ['foo', 'bar', 'baz']);
 		}
 	}
 }).export(module);

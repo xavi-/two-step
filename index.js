@@ -106,7 +106,7 @@ function TwoStep() {
 	function jumpTo(func, args) {
 		if (typeof func === 'function') {
 			curIdx = Number.MAX_VALUE;
-			func.apply(null, args);
+			func.apply(this, args);
 		} else {
 			for(var i = 0; i < steps.length; i++) {
 				if(steps[i].name !== func) { continue; }
