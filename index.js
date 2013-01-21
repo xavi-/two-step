@@ -104,18 +104,18 @@ function TwoStep() {
 	var data = {};
 
 	function jumpTo(func, args) {
-    if (typeof func === 'function') {
-      curIdx = Number.MAX_VALUE;
-      func.apply(null, args);
-    } else {
-      for(var i = 0; i < steps.length; i++) {
-        if(steps[i].name !== func) { continue; }
+		if (typeof func === 'function') {
+			curIdx = Number.MAX_VALUE;
+			func.apply(null, args);
+		} else {
+			for(var i = 0; i < steps.length; i++) {
+				if(steps[i].name !== func) { continue; }
 
-        curIdx = i;
+				curIdx = i;
 
-        break;
-      }
-    }
+				break;
+			}
+		}
 		nextStep.apply(null, args);
 	}
 

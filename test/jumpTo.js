@@ -34,33 +34,33 @@ vows.describe("Test `this.val`").addBatch({
 			assert.equal(data["last"].args[1], "hello", "The incorrect arguments were sent");
 		}
 	},
-  "bail out if a function was specified": {
-    topic: function() {
-      var callback = this.callback;
-      var visited = [];
-      function externalFunc() {
-        visited.push('externalFunc');
-        callback(visited, Array.prototype.slice.call(arguments));
-      }
-      TwoStep(
-        function s1() {
-          visited.push('s1');
-          this.jumpTo(externalFunc, ['foo', 'bar', 'baz']);
-        },
-        function s2() {
-          visited.push('s2');
-        },
-        function s3() {
-          visited.push('s3');
-        },
-        callback
-      );
-    },
-    "correct callbacks were called": function(visited, _) {
-      assert.deepEqual(visited, ['s1', 'externalFunc']);
-    },
-    "correct arguments were passed to external function": function(_, externalFuncArgs) {
-      assert.deepEqual(externalFuncArgs, ['foo', 'bar', 'baz']);
-    }
-  }
+	"bail out if a function was specified": {
+		topic: function() {
+			var callback = this.callback;
+			var visited = [];
+			function externalFunc() {
+				visited.push('externalFunc');
+				callback(visited, Array.prototype.slice.call(arguments));
+			}
+			TwoStep(
+				function s1() {
+					visited.push('s1');
+					this.jumpTo(externalFunc, ['foo', 'bar', 'baz']);
+				},
+				function s2() {
+					visited.push('s2');
+				},
+				function s3() {
+					visited.push('s3');
+				},
+				callback
+			);
+		},
+		"correct callbacks were called": function(visited, _) {
+			assert.deepEqual(visited, ['s1', 'externalFunc']);
+		},
+		"correct arguments were passed to external function": function(_, externalFuncArgs) {
+			assert.deepEqual(externalFuncArgs, ['foo', 'bar', 'baz']);
+		}
+	}
 }).export(module);
