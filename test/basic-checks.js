@@ -25,4 +25,4 @@ module.exports = {
 			assert.equal(data[name].args.length, 0, name + " didn't have empty args");
 		};
 	}
-}
+};

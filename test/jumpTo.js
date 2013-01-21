@@ -8,20 +8,19 @@ vows.describe("Test `this.val`").addBatch({
 		topic: function() {
 			TwoStep(
 				function start(err) {
-					debugger;
 					check.save(this, arguments);
 					this.jumpTo("last", [ err, "hello" ]);
 				},
 				function skip(err) {
 					check.save(this, arguments);
-					throw "This callback should not be executed."
+					throw "This callback should not be executed.";
 				},
 				function last(err) {
 					check.save(this, arguments);
 					this.syncVal(this.data);
 				},
 				this.callback
-			)
+			);
 		},
 		"no args to first callback": check.emptyArgs("start"),
 		"correct callbacks were called": check.coverage([ "start", "last" ]),

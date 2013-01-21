@@ -7,7 +7,6 @@ var check = require("./basic-checks");
 vows.describe("Test `this.val`").addBatch({
 	"basic test passing one param": {
 		topic: function() {
-			var callback = this.callback;
 			TwoStep(
 				function readSelf() {
 					check.save(this, arguments);

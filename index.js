@@ -55,7 +55,7 @@ StepObj.prototype = {
 			if(err) { return params.error(err, errInfo(params.name, paramIdx, name)); }
 
 			params.done(paramIdx, val);
-		}
+		};
 	},
 	valArray: function(name) {
 		name = (name || "array");
@@ -71,8 +71,8 @@ StepObj.prototype = {
 
 		return {
 			val: function(valName) {
-				valName = (valName || name + "(" + valIdx + ")");
 				var valIdx = arrayVals.nextIdx();
+				valName = (valName || name + "(" + valIdx + ")");
 
 				return function(err, val) {
 					if(err) { return arrayVals.error(err, errInfo("", 0, valName)); }
@@ -121,7 +121,7 @@ function TwoStep() {
 
 	function nextStep(err) {
 		// If error occurs in the last test, re-throw exception.
-		if(err && curIdx == steps.length) { throw err; }
+		if(err && curIdx === steps.length) { throw err; }
 
 		if(curIdx >= steps.length) { return; }
 

@@ -1,4 +1,3 @@
-var fs = require("fs");
 var vows = require("vows");
 var assert = require("assert");
 var TwoStep = require("../");
