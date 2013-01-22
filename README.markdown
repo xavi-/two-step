@@ -81,7 +81,7 @@ An optional string parameter can passed in to `this.val` as well.  This string c
 	);
 	```
 - **this.jumpTo(string, [argsArray])** -- allows you to jump to any named function in the current step chain
-- **this.jumpTo(function, [argsArray])** -- used to call an outside function and to exit the current step chain
+- **this.jumpTo(function, [argsArray])** -- exits the current step chain and asynchronously call an outside function
 
 	```javascript
 	function badNews(err) {

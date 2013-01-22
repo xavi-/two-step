@@ -104,19 +104,24 @@ function TwoStep() {
 	var data = {};
 
 	function jumpTo(func, args) {
+		this._params._used = true;
+
 		if (typeof func === 'function') {
 			curIdx = Number.MAX_VALUE;
 			func.apply(this, args);
-		} else {
-			for(var i = 0; i < steps.length; i++) {
-				if(steps[i].name !== func) { continue; }
-
-				curIdx = i;
-
-				break;
-			}
+			return;
 		}
-		nextStep.apply(null, args);
+
+		for(var i = 0; i < steps.length; i++) {
+			if(steps[i].name !== func) { continue; }
+
+			curIdx = i;
+
+			break;
+		}
+		if(i === steps.length) { throw Error("Unknown jumpTo location: " + func); }
+
+		process.nextTick(function() { nextStep.apply(null, args); });
 	}
 
 	function nextStep(err) {

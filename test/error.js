@@ -54,6 +54,23 @@ vows.describe("Test error handling").addBatch({
 					function lastErr() { throw "Last Error Thrown"; }
 				);
 			}, "Last Error Thrown");
+		},
+		"error thrown when jumpTo non-existant location": function(TwoStep) {
+			assert.throws(function() {
+				TwoStep(
+					function first() { this.jumpTo("no-where"); }
+				);
+			}, "Error thrown when trying to jumpTo unknow function name.");
+			assert.throws(function() {
+				TwoStep(
+					function first() { this.jumpTo(5); }
+				);
+			}, "Error thrown when trying to jumpTo unknow function index.");
+			assert.throws(function() {
+				TwoStep(
+					function first() { this.jumpTo(null); }
+				);
+			}, "Error thrown when trying to jumpTo unknow function.");
 		}
 	}
 }).export(module);

@@ -2,6 +2,8 @@ var assert = require("assert");
 
 module.exports = {
 	save: function(stepObj, args) {
+		stepObj.data.callSeq = stepObj.data.callSeq || [];
+		stepObj.data.callSeq.push(stepObj._params.name);
 		stepObj.data[stepObj._params.name] = { when: Date.now(), args: Array.prototype.slice.call(args) };
 	},
 	coverage: function(names) {
@@ -11,12 +13,14 @@ module.exports = {
 	},
 	order: function(names) {
 		return function(data) {
-			for(var i = 1; i < names.length; i++) {
-				var nameA = names[i - 1], nameB = names[i];
-				assert.ok(data[nameA] != null, "Unknown function name: '" + nameA + "'");
-				assert.ok(data[nameB] != null, "Unknown function name: '" + nameB + "'");
-				assert.ok(data[nameA].when <= data[nameB].when, nameA + " was not called before " + nameB);
-			}
+			names.forEach(function(name) {
+				assert.ok(data[name] != null, "Unknown function name: '" + name + "'");
+			});
+			assert.deepEqual(
+				data.callSeq,
+				names,
+				"Functions were not called in order:\n\t\texpected: " + names + "\n\t\tactual: " + data.callSeq
+			);
 		};
 	},
 	emptyArgs: function(name) {
