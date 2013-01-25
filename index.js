@@ -107,7 +107,6 @@ function TwoStep() {
 		this._params._used = true;
 
 		if (typeof func === 'function') {
-			curIdx = Number.MAX_VALUE;
 			func.apply(this, args);
 			return;
 		}
