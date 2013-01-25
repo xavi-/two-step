@@ -80,8 +80,8 @@ StepObj.prototype = {
 					arrayVals.done(valIdx, val);
 				};
 			},
-			syncVal: function(val, valName) {
-				this.val(valName)(null, val);
+			syncVal: function(val, name) {
+				this.val(name)(null, val);
 			}
 		};
 	},
