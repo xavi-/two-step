@@ -86,7 +86,8 @@ StepObj.prototype = {
 		};
 	},
 	syncVal: function(val, name) {
-		this.val(name)(null, val);
+		var callback = this.val(name);
+		process.nextTick(function() { callback(null, val); });
 	},
 	listen: function(emitter, name) {
 		var params = this._params, paramIdx = params.nextIdx();
