@@ -93,7 +93,9 @@ StepObj.prototype = {
 
 		var chunks = [];
 		emitter.on('data', function (chunk) { chunks.push(chunk); });
-		emitter.on('error', function(err) { params.error(err, errInfo(params.name, paramIdx, name)); });
+		emitter.on('error', function(err) {
+			params.error(err, errInfo(params.name, paramIdx, name));
+		 });
 		emitter.on('end', function() { params.done(paramIdx, chunks); });
 	}
 };

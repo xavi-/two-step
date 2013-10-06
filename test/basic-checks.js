@@ -4,7 +4,10 @@ module.exports = {
 	save: function(stepObj, args) {
 		stepObj.data.callSeq = stepObj.data.callSeq || [];
 		stepObj.data.callSeq.push(stepObj._params.name);
-		stepObj.data[stepObj._params.name] = { when: Date.now(), args: Array.prototype.slice.call(args) };
+		stepObj.data[stepObj._params.name] = {
+			when: Date.now(),
+			args: Array.prototype.slice.call(args)
+		};
 	},
 	coverage: function(names) {
 		return function(data) {
@@ -19,7 +22,9 @@ module.exports = {
 			assert.deepEqual(
 				data.callSeq,
 				names,
-				"Functions were not called in order:\n\t\texpected: " + names + "\n\t\tactual: " + data.callSeq
+				"Functions were not called in order:" +
+					"\n\t\texpected: " + names +
+					"\n\t\tactual: " + data.callSeq
 			);
 		};
 	},
